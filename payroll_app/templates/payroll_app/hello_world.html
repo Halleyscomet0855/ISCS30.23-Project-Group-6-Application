@@ -1,0 +1,15 @@
+{% extends 'payroll_app/base.html' %}
+
+{% block content %}
+    <h1>Welcome to the Employee Management System</h1>
+    <p>This system allows you to manage employees' information efficiently.</p>
+    <p>Here are some features:</p>
+    <ul>
+        <li>View a list of all employees</li>
+        <li>View details of each employee</li>
+        <li>Add new employees</li>
+        <li>Edit existing employee information</li>
+        <li>Delete employees</li>
+    </ul>
+    <p>Get started by navigating to the <a href="{% url 'employee_list' %}">Employee List</a>.</p>
+{% endblock %}

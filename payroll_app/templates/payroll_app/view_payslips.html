@@ -1,0 +1,131 @@
+{% extends 'payroll_app/base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: none;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th.right, td.right {
+        text-align: right;
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid black;
+        margin: 20px 0;
+    }
+
+    .general-details {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 10px;
+    }
+
+    .general-details p {
+        margin: 0;
+    }
+</style>
+
+
+<div class="form-container">
+
+<div class="col-10 justify-content-center" >
+    <table class="table">
+        <tbody>
+            <tr>
+                
+                <td>Name: {{ payslips.id_number.name }}</td>
+                <td class="right">Date: {{ payslips.month }} {{ payslips.date_range }}, {{ payslips.year }}</td>
+             </tr>
+             <tr>
+                <td>ID: {{ payslips.id_number.id_number }}</td>
+              
+                <td class="right"> Cycle: {{ payslips.pay_cycle }}</td>
+             </tr>
+             <tr></tr>
+        </tbody>
+    </table>
+</div>
+
+
+<hr>
+
+<h2>Earnings</h2>
+<table class="table">
+    <tbody>
+        {% if payslips.pay_cycle == 1 %}
+        <tr>
+            <td>Base Pay:</td>
+            <td class="right">{{ payslips.id_number.rate }}</td>
+        </tr>
+        <tr>
+            <td>Allowance:</td>
+            <td class="right">{{ payslips.earnings_allowance }}</td>
+        </tr>
+        <tr>
+            <td>Overtime:</td>
+            <td class="right">{{ payslips.overtime }}</td>
+        </tr>
+        {% elif payslips.pay_cycle == 2 %}
+        <tr>
+            <td>Base Pay:</td>
+            <td class="right">{{ payslips.id_number.rate }}</td>
+        </tr>
+        <tr>
+            <td>Allowance:</td>
+            <td class="right">{{ payslips.earnings_allowance }}</td>
+        </tr>
+        <tr>
+            <td>Overtime:</td>
+            <td class="right">{{ payslips.overtime }}</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+<hr>
+<h2>Deductions</h2>
+<table class="table">
+    <tbody>
+        {% if payslips.pay_cycle == 1 %}
+        <tr>
+            <td>Withholding Tax:</td>
+            <td class="right">{{ payslips.deductions_tax|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <td>Pag-Ibig:</td>
+            <td class="right">{{ payslips.pag_ibig }}</td>
+        </tr>
+        {% elif payslips.pay_cycle == 2 %}
+        <tr>
+            <td>Withholding Tax:</td>
+            <td class="right">{{ payslips.deductions_tax|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <td>PhilHealth:</td>
+            <td class="right">{{ payslips.deductions_health|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <td>SSS:</td>
+            <td class="right">{{ payslips.sss|floatformat:2 }}</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+
+<hr>
+<h2>Net Pay</h2>
+<p style="font-weight: bold; text-align: right;">{{ payslips.total_pay|floatformat:2 }}</p>
+
+</div>
+{% endblock %}

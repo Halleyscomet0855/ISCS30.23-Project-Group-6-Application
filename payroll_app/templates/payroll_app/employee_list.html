@@ -1,0 +1,100 @@
+{% extends 'payroll_app/base.html' %}
+{% load static %}
+
+  {% block content %}
+
+<style>
+.table-container {
+  margin: auto;
+  width: 80%;
+}
+
+.btn-new-employee {
+  float: right;
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    width: 100%;
+  }
+}
+
+.error-message {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+</style>
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-md-6">
+      <h1>Employees</h1>
+    </div>
+    
+    {% if messages %}
+<ul class="error-message">
+    {% for message in messages %}
+        <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+    <div class="col-md-6 text-right">
+      <a href="{% url 'create_employee' %}" class="btn btn-secondary mb-3 btn-new-employee">+ New Employee</a>
+    </div>
+  </div>
+  
+  <div class="col-10 justify-content-center table-container">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th class="table-dark" scope="col">Name</th>
+          <th class="table-dark" scope="col">ID Number</th>
+          <th class="table-dark" scope="col">Rate</th>
+          <th class="table-dark" scope="col">Overtime Pay</th>
+          <th class="table-dark" scope="col">Allowance</th>
+          <th class="table-dark" scope="col">Options</th>
+          <th class="table-dark" scope="col"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for employee in employees %}
+        <tr>
+          <td>{{ employee.name }}</td>
+          <td>{{ employee.id_number }}</td>
+          <td>{{ employee.rate }}</td>
+          <td>{{ employee.overtime_pay }}</td>
+          <td>{{ employee.allowance }}</td>
+          <td>
+            <a href="{% url 'update_employee' pk=employee.pk %}" class="btn btn-primary">Update</a>
+            <a href="{% url 'delete_employee' pk=employee.pk %}" class="btn btn-danger">Delete</a>
+            <form action="{% url 'calculate_overtime_pay' pk=employee.pk %}" method="post">
+              {% csrf_token %}
+              <div class="input-group">
+                <input type="number" class="form-control" placeholder="Overtime Hours" name="overtime_hour" min="0">
+                <div class="input-group-append">
+                  <button class="btn btn-secondary" style="background-color: green;">Add Overtime</button>
+                </div>
+            </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+
+
+
+
+{% endblock %}

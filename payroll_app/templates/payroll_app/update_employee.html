@@ -1,0 +1,67 @@
+{% extends 'payroll_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .form-container {
+        border: 1px solid #ccc; 
+        padding: 20px; 
+        width: 50%; 
+        max-width: 500px;
+        border-radius: 10px; 
+        margin: 0 auto;
+        margin-top: 20px; 
+    }
+
+    .form-container label {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .form-container input[type="text"], .form-container input[type="number"] {
+        padding: 5px;
+        margin-bottom: 20px;
+        width: 100%;
+        border-radius: 5px;
+        border: 1px solid #ccc; 
+    }
+
+    .form-container select {
+        margin-bottom: 20px;
+    }
+
+</style>
+
+<div class="form-container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Update Employee</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form method="post">
+                {% csrf_token %}
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="{{ employee.name }}"><br>
+
+                <label for="id_number">ID Number:</label>
+                <input type="text" id="id_number" name="id_number" value="{{ employee.id_number }}"><br>
+
+                <label for="rate">Rate:</label>
+                <input type="text" id="rate" name="rate" value="{{ employee.rate }}"><br>
+
+                <!-- <label for="overtime_pay">Overtime Pay:</label> -->
+                <!-- <input type="text" id="overtime_pay" name="overtime_pay" value="{{ employee.overtime_pay }}" placeholder="0"><br> -->
+
+                <label for="allowance">Allowance:</label>
+                <input type="text" id="allowance" name="allowance" value="{{ employee.allowance }}" placeholder="0"><br>
+
+                <button type="submit" class="btn btn-primary">Update Employee</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

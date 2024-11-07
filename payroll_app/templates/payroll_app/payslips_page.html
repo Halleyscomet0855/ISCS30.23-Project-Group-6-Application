@@ -1,0 +1,141 @@
+{% extends 'payroll_app/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .form-container {
+        border: 1px solid #ccc; 
+        padding: 20px; 
+        width: 50%; 
+        max-width: 500px;
+        border-radius: 10px; 
+        margin: 0 auto;
+        margin-top: 20px; 
+    }
+
+    .form-container label {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .form-container input[type="text"],
+    .form-container input[type="number"] {
+        padding: 5px;
+        margin-bottom: 20px;
+        width: 100%;
+        border-radius: 5px;
+        border: 1px solid #ccc; 
+    }
+
+    .form-container select {
+        margin-bottom: 20px;
+        width: 100%;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .form-container button {
+        padding: 5px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .form-container button:hover {
+        background-color: #0056b3;
+    }
+        .error-message {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="form-container">
+    <h1>Payslips Page</h1>
+
+    {% if messages %}
+<ul class="error-message">
+    {% for message in messages %}
+        <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+    <form action="{% url 'create_payslip' %}" method="post" >
+        {% csrf_token %}
+        <label for="employee_pay">Payroll for:</label>
+        <select id="employee_pay" name="employee_pay">
+            <option value="all">All Employees</option>
+            {% for employee in employees %}
+            <option value="{{ employee.pk }}">{{employee.id_number}} | {{ employee.name }}  </option>
+            {% endfor %}
+        </select><br>
+
+        <label for="month">Month:</label>
+        <select id="month" name="month">
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+        </select><br>
+
+        <label for="year">Year:</label>
+        <input type="text" id="year" name="year"><br>
+
+        <label for="pay_cycle">Cycle:</label>
+        <select id="pay_cycle" name="pay_cycle">
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select><br>
+
+    <button type="submit">Create Payroll</button>
+    </form>
+
+</div>
+
+    <h2>Payslip Summary</h2>
+    <div class="col-10 justify-content-center" >
+        <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="table-dark" scope="col">ID Number</th>
+                <th class="table-dark" scope="col">Date</th>
+                <th class="table-dark" scope="col">Cycle</th>
+                <th class="table-dark" scope="col">Total Pay</th>
+                <th class="table-dark" scope="col">Options</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            {% for payslip in payslips %}
+            <tr>
+                <td>{{ payslip.id_number.id_number }}</td>
+                <td>{{payslip.month}} {{payslip.date_range}}, {{ payslip.year }}</td>
+                <td>{{ payslip.pay_cycle }}</td>
+                <td>{{ payslip.total_pay|floatformat:2 }}</td>
+                <td><a href="{% url 'view_payslips' pk=payslip.pk %}" class="btn btn-secondary">View Payslip</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+
+{% endblock %}

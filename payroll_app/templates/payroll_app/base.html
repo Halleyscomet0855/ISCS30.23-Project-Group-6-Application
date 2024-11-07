@@ -1,0 +1,62 @@
+{% load static %}
+
+<html>
+    <head>
+        <title>The List</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+        <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static '/bootstrap/css/custom.css' %}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <style>
+            a {
+                color: black;
+                text-decoration: none;
+            }
+
+            .footer { 
+              position: fixed;
+              left: 0;
+              bottom: 0;
+              width: 100%;
+              text-align: center;
+              padding: 3px;
+              background-color: rgb(45, 45, 45);
+              color: white;
+            }
+
+            body {
+              margin-bottom: 3rem;
+              position: relative;
+            }
+        </style>
+        
+    </head>
+    <body>
+        <nav class="navbar navbar-dark bg-custom mb-3 sticky-top" style="background-color: #454545;">
+            <div class="container-fluid">
+                <class="fa fa-heart" style="color:white"><b> Lazapee PAYROLL </b></a>
+        </class>
+                <a href="{% url 'employee_list' %}" style="color:white"><sub>Employees</sub></a>
+                <a href="{% url 'payslips_page' %}"  style="color:white"> <sub>Payslips</sub></a>
+            
+              
+            </div>
+
+        </nav>
+
+        <div class="container">
+            <div class="row d-flex justify-content-center">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>  
+
+    </body>
+  
+    <div class="footer">  
+    <p> Group-6, 2025 ©</p>  
+    </div>
+
+</html>
