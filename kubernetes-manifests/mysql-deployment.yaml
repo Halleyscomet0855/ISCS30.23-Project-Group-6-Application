@@ -1,0 +1,53 @@
+apiVersion: v1 # first step: create a ClusterIP service for the mysql container
+kind: Service
+metadata:
+  name: mysql
+spec:
+  selector:
+    app: mysql
+  type: ClusterIP # ClusterIP means creation of an IP for a deployment (needed for django)
+  ports:
+    - name: mysql
+      protocol: TCP
+      port: 80
+      targetPort: 5000
+---
+apiVersion: v1 # second step: create a PV claim. according to lab, claiming a PV should be enough.
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1 # 3rd step: deploy a mysql pod.
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - image: mysql:latest # should retrieve a mysql image
+          name: mysql
+          volumeMounts:
+            - name: mysql-persistent-storage # This mounts the volume to a path: mysql will use mouthPath
+              mountPath: /var/lib/mysql
+      ports:
+        - containerPort: 3306
+          name: mysql
+      volumes:
+        - name: mysql-persistent-storage
+          PersistentVolumeClaim:
+            claimName: mysql-pvc # binds the volume to the PVC.
