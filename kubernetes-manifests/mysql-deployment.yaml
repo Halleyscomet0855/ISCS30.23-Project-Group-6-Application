@@ -42,7 +42,7 @@ spec:
         - image: mysql:latest # should retrieve a mysql image
           name: mysql
           volumeMounts:
-            - name: mysql-persistent-storage # This mounts the volume to a path: mysql will use mouthPath
+            - name: mysql-persistent-storage # This mounts the volume to a path: mysql will use mountPath
               mountPath: /var/lib/mysql
       ports:
         - containerPort: 3306
