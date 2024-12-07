@@ -28,6 +28,59 @@ deployed, known as a manifest.
 
 For this project, all manifests are held in the 'kubernetes-manifests/' folder.
 
+# Dependencies
+
+The following must be installed to deploy this app:
+
+- docker
+- gcloud
+- kubectl
+
+Please follow the instructions for your operating system.
+
+# Pre-deployment
+
+Before everything, first create your cluster:
+'''
+gcloud container clusters create {{cluster name}} --num-nodes 1 --zone asia-west1
+--enable-ip-alias
+'''
+
+Each node will take up ~300GB, so make sure your account has enough space!
+
+Now, do the following:
+
+1. In the google cloud console, search for IP Addresses, and click on the one under VPC
+   Network.
+2. Click "Reserve a Static Address." Input a name for your address (ex. lazapee-ip), and
+   change the area to asia-west1. Click reserve afterwards.
+3. Copy-Paste the resulting address. Go to service-lazapee.yaml.
+4. Uncomment the loadBalancerIP line. Paste the IP address there.
+5. Head to your django settings' file. Add your IP address to the allowed_hosts list.
+
+This is done in order to allow for the ip to access the django app. Without this, you will
+get an error as django will block any ip that is not in the allowed_hosts list from
+accessing the app.
+
+Alternatively, you can also skip reserving a static address. Deploy the service-lazapee
+file first (See [[# Deployment]]), then run 'kubectl get services'. You may have to wait a
+little bit until the column called External IP is filled in with an IP. Copy-paste this IP
+to the allowed_hosts list.
+
+Now that that's done, run the following command:
+docker build -t {DockerhubUsername}/lazapee:0.1.
+
+Afterwards, push the image:
+docker push -t {DockerhubUsername}/lazapee:0.1.
+
+Finally, edit the lazapee manifest such that beside the container tag, it has your specific
+image. Currently it's using halleyscomet0855/lazapee:1.0, but you should change it to your
+own image. Kubernetes will be pulling this image from Dockerhub, so make sure this is
+changed!
+
+Before we continue, let's discuss first each manifest in order to understand what we're
+working with here:
+
 # lazapee-manifest
 
 WIP
@@ -91,10 +144,6 @@ WIP
 # deployment
 
 After all manifests are written, the following command must be run:
-'''
-gcloud container clusters create {{cluster name}} --num-nodes 1 --zone asia-west1
---enable-ip-alias
-'''
 
 This will create the cluster in the console. Afterwards, you can use kubectl to apply your
 manifests:
