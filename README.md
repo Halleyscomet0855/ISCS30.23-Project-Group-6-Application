@@ -152,7 +152,6 @@ do that! You can use Kubernetes' Secrets function, but that's a bit out of scope
 demonstration.)
 
 # lazapee-service
-
 ```
 apiVersion: v1
 kind: Service
@@ -167,8 +166,9 @@ spec:
       port: 8080
       targetPort: 8080
 ```
-
-# deployment
+Shown above is the contents of service-lazapee.yaml. Services, as mentioned before, allow pods to
+interface with each other. LoadBalancer allows external traffic to be routed to the targetPort. 
+# Deployment
 
 After all manifests are written, the following command must be run:
 
