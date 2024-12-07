@@ -43,7 +43,7 @@ Please follow the instructions for your operating system.
 Before everything, first create your cluster:
 
 ```
-gcloud container clusters create {{cluster name}} --num-nodes 1 --zone asia-west1
+gcloud container clusters create {{cluster name}} --num-nodes 1 --zone asia-east1
 --enable-ip-alias
 ```
 
@@ -191,6 +191,14 @@ mysql -u root -p
 ```
 
 From here, create a database called 'lazapeedata'. Exit afterwards.
+
+Afterwards, migrate the database:
+
+```
+kubectl exec {application-pod-name} -- python manage.py migrate
+```
+
+This should get the database all setup.
 
 2. Autoscaling
 

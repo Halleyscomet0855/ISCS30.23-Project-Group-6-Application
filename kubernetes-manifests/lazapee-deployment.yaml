@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: lazapee
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: lazapee
@@ -14,9 +14,7 @@ spec:
     spec:
       containers:
         - name: my-container
-          image: halleyscomet0855/lazapee:1.0
-          command: ["python"]
-          args: ["manage.py", "migrate"]
+          image: halleyscomet0855/test:0.1
           env:
             - name: DB_HOST
               value: mysql
