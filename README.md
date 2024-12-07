@@ -92,7 +92,9 @@ working with here:
 
 # lazapee-manifest
 
-WIP
+In this Kubernetes manifest it defines a Deployment resource, which ensures the continuous running and management of a containerized application. The Deployment of the application named Lazapee, is specified under the metadata section. It will create and maintain three replicas of a Pod, as indicated in the replicas field of the spec section. The Deployment uses a selector to match Pods with the label app: Lazapee, ensuring it manages only those Pods.
+
+Each Pod is defined by the template field, which includes metadata that labels the Pods with "app: Lazapee" for identification. Inside each Pod, there is a single container named my-container, which uses the image "halleyscomet0855/lazapee". The container exposes port 8080 for the application to listen on. Kubernetes will ensure that three replicas of this Pod are always running, and it will replace any failed Pods to maintain the desired state.
 
 # mySQL-manifest
 
