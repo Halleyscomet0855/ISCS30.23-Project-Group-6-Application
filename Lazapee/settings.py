@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-_9&^2x3mk439854=@cp&a=a=1os)aw*@!*=9s+p!@v^alf7+ds
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".asia-east1.run.app"]
+ALLOWED_HOSTS = ["34.80.129.168", "localhost", "127.0.0.1", ".asia-east1.run.app"]
 
 CSRF_TRUSTED_ORIGINS = ["https://*.asia-east1.run.app"]
 
@@ -79,8 +79,12 @@ WSGI_APPLICATION = "Lazapee.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "lazapeedata",
+        "USER": "root",
+        "PASSWORD": "admin",
+        "HOST": "mysql",
+        "PORT": "3306",
     }
 }
 

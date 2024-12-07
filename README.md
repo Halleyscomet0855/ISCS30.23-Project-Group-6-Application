@@ -34,12 +34,105 @@ WIP
 
 # mySQL-manifest
 
-WIP
+The mySQL manifest has three sections: the service, the PersistentVolumeClaim, and the
+mysql StatefulSet proper. This manifest will deploy one mySQL pod with a ClusterIP
+service, alongside a PersistentVolumeClaim. You can consider the PersistentVolumeClaim as
+a way to introduce a static directory to store data: normally, data in Kubenetes can
+disappear as pods fail and get replaced. The Persistent Volume keeps the data safe, even
+if the pods fail.
+
+The ClusterIP service allows MySQL to interface with other pods. Think of it as exposing a
+port for access. In this case, it exposes port 3306.
+
+the mySQL pod proper is a StatefulSet, a type of Pod meant to ensure consistency. It
+essentially fixes the name of a pod to be "mysql-x", where x is a number from 0 onwards.
+
+## Django and Services
+
+As mentioned prior, Pods can only interface with each other via services. This means that
+the Django settings file must be edited. Normally, the django database settings look
+something like this:
+
+'''
+DATABASES = {
+"default": {
+"ENGINE": "django.db.backends.mysql",
+"NAME": "lazapeedata",
+"USER": "root",
+"PASSWORD": "admin",
+"HOST": "localhost",
+}
+}
+'''
+
+This, however, will not work: because MySQL is not local at all. Instead, you need to
+specify the host and the port:
+DATABASES = {
+"default": {
+"ENGINE": "django.db.backends.mysql",
+"NAME": "lazapeedata",
+"USER": "root",
+"PASSWORD": "admin",
+"HOST": "mysql",
+"PORT": "3306",
+}
+}
+
+This way, Django can interface with the MySQL pod.
+
+(You may notice that the password is put there for everyone to see. You really shouldn't
+do that! You can use Kubernetes' Secrets function, but that's a bit out of scope for this
+demonstration.)
 
 # lazapee-service
 
 WIP
 
-# Post-deployment
+# deployment
 
-WIP for now while the manifests are being written
+After all manifests are written, the following command must be run:
+'''
+gcloud container clusters create {{cluster name}} --num-nodes 1 --zone asia-west1
+--enable-ip-alias
+'''
+
+This will create the cluster in the console. Afterwards, you can use kubectl to apply your
+manifests:
+
+'''
+kubectl apply -f {{manifest name}}
+'''
+
+This should deploy the following:
+
+- a MySQL instance;
+- The lazapee django application; (CAUTION: read Post-Deployment before deploying this!)
+- a lazapee LoadBalancer service;
+- a MySQL ClusterIP instance;
+- a PersistentVolumeClaim named "mysql-pv-claim"
+
+# Post-Deployment
+
+There are some minor details we may have to handle first, before anything happens.
+
+1. Create a database.
+   NOTE: this must be done before deploying the lazapee instance, or else it is possible that
+   the lazapee deployment will attempt to migrate without any database.
+
+The migrate function of django requires a database to already be present. As such, you
+must first enter the mysql pod and interface with it:
+
+'''
+kubectl exec -it {pod-name} -- /bin/bash
+mysql -u root -p
+'''
+From here, create a database called 'lazapeedata'. Exit afterwards.
+
+2. Autoscaling
+
+The lazapee-manifest defines only one pod to be created. You can change this and add
+autoscaling via the command:
+"kubectl autoscale deployment web --max 4 --min 1 --cpu-percent 1"
+
+This will create a HorizontalPodAutoscaler object which will create and destroy pods based
+on how much traffic there is.
