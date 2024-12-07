@@ -41,10 +41,11 @@ Please follow the instructions for your operating system.
 # Pre-deployment
 
 Before everything, first create your cluster:
-'''
+
+```
 gcloud container clusters create {{cluster name}} --num-nodes 1 --zone asia-west1
 --enable-ip-alias
-'''
+```
 
 Each node will take up ~300GB, so make sure your account has enough space!
 
@@ -68,10 +69,18 @@ little bit until the column called External IP is filled in with an IP. Copy-pas
 to the allowed_hosts list.
 
 Now that that's done, run the following command:
+
+```
+
 docker build -t {DockerhubUsername}/lazapee:0.1.
+```
 
 Afterwards, push the image:
+
+```
+
 docker push -t {DockerhubUsername}/lazapee:0.1.
+```
 
 Finally, edit the lazapee manifest such that beside the container tag, it has your specific
 image. Currently it's using halleyscomet0855/lazapee:1.0, but you should change it to your
@@ -106,30 +115,33 @@ As mentioned prior, Pods can only interface with each other via services. This m
 the Django settings file must be edited. Normally, the django database settings look
 something like this:
 
-'''
+```
 DATABASES = {
-"default": {
-"ENGINE": "django.db.backends.mysql",
-"NAME": "lazapeedata",
-"USER": "root",
-"PASSWORD": "admin",
-"HOST": "localhost",
+    "default": {
+    "ENGINE": "django.db.backends.mysql",
+    "NAME": "lazapeedata",
+    "USER": "root",
+    "PASSWORD": "admin",
+    "HOST": "localhost",
+    }
 }
-}
-'''
+```
 
 This, however, will not work: because MySQL is not local at all. Instead, you need to
 specify the host and the port:
+
+```
 DATABASES = {
-"default": {
-"ENGINE": "django.db.backends.mysql",
-"NAME": "lazapeedata",
-"USER": "root",
-"PASSWORD": "admin",
-"HOST": "mysql",
-"PORT": "3306",
+    "default": {
+    "ENGINE": "django.db.backends.mysql",
+    "NAME": "lazapeedata",
+    "USER": "root",
+    "PASSWORD": "admin",
+    "HOST": "mysql",
+    "PORT": "3306",
+    }
 }
-}
+```
 
 This way, Django can interface with the MySQL pod.
 
@@ -148,9 +160,9 @@ After all manifests are written, the following command must be run:
 This will create the cluster in the console. Afterwards, you can use kubectl to apply your
 manifests:
 
-'''
+```
 kubectl apply -f {{manifest name}}
-'''
+```
 
 This should deploy the following:
 
@@ -171,17 +183,21 @@ There are some minor details we may have to handle first, before anything happen
 The migrate function of django requires a database to already be present. As such, you
 must first enter the mysql pod and interface with it:
 
-'''
+```
 kubectl exec -it {pod-name} -- /bin/bash
 mysql -u root -p
-'''
+```
+
 From here, create a database called 'lazapeedata'. Exit afterwards.
 
 2. Autoscaling
 
 The lazapee-manifest defines only one pod to be created. You can change this and add
 autoscaling via the command:
+
+```
 "kubectl autoscale deployment web --max 4 --min 1 --cpu-percent 1"
+```
 
 This will create a HorizontalPodAutoscaler object which will create and destroy pods based
 on how much traffic there is.
