@@ -159,6 +159,7 @@ metadata:
   name: service-lazapee
 spec:
   type: LoadBalancer
+  # loadBalancerIP: xx.xx.xxx
   selector:
     app: lazapee
   ports:
