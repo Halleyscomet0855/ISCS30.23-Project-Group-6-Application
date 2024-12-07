@@ -153,7 +153,20 @@ demonstration.)
 
 # lazapee-service
 
-WIP
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-lazapee
+spec:
+  type: LoadBalancer
+  selector:
+    app: lazapee
+  ports:
+    - name: service-lazapee
+      port: 8080
+      targetPort: 8080
+```
 
 # deployment
 
