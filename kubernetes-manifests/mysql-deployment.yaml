@@ -3,19 +3,18 @@ kind: Service
 metadata:
   name: mysql
 spec:
+  type: ClusterIP
   selector:
     app: mysql
-  type: ClusterIP # ClusterIP means creation of an IP for a deployment (needed for django)
   ports:
     - name: mysql
       protocol: TCP
-      port: 80
-      targetPort: 5000
+      port: 3306
 ---
 apiVersion: v1 # second step: create a PV claim. according to lab, claiming a PV should be enough.
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pvc
+  name: mysql-pv-claim
 spec:
   accessModes:
     - ReadWriteOnce
@@ -24,15 +23,13 @@ spec:
       storage: 2Gi
 ---
 apiVersion: apps/v1 # 3rd step: deploy a mysql pod.
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mysql
 spec:
   selector:
     matchLabels:
       app: mysql
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
@@ -41,13 +38,19 @@ spec:
       containers:
         - image: mysql:latest # should retrieve a mysql image
           name: mysql
+          resources:
+            limits:
+              memory: "512Mi"
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "admin"
           volumeMounts:
             - name: mysql-persistent-storage # This mounts the volume to a path: mysql will use mountPath
               mountPath: /var/lib/mysql
-      ports:
-        - containerPort: 3306
-          name: mysql
+          ports:
+            - containerPort: 3306
+              name: mysql
       volumes:
         - name: mysql-persistent-storage
-          PersistentVolumeClaim:
-            claimName: mysql-pvc # binds the volume to the PVC.
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim # binds the volume to the PVC.

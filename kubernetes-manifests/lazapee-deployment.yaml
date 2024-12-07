@@ -1,20 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: Lazapee
+  name: lazapee
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: Lazapee
+      app: lazapee
   template:
     metadata:
       labels:
-        app: Lazapee
+        app: lazapee
     spec:
       containers:
         - name: my-container
-          image: halleyscomet0855/lazapee
-
+          image: halleyscomet0855/lazapee:1.0
+          env:
+            - name: DB_HOST
+              value: mysql
+            - name: DB_PORT
+              value: "3306"
           ports:
             - containerPort: 8080
